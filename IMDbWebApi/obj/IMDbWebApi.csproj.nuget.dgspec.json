@@ -40,9 +40,29 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "HtmlAgilityPack.NetCore": {
+              "target": "Package",
+              "version": "[1.5.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.13, )"
+            },
+            "Microsoft.Net.Http": {
+              "target": "Package",
+              "version": "[2.2.29, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
+            },
+            "dotenv.net": {
+              "target": "Package",
+              "version": "[3.1.3, )"
             }
           },
           "imports": [

@@ -1,8 +1,17 @@
+using dotenv.net;
+using IMDbWebApi.Contracts;
+using IMDbWebApi.Services;
+
+DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient<IMovieService>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
