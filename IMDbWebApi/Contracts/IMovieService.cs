@@ -5,8 +5,8 @@ namespace IMDbWebApi.Contracts
 {
     public interface IMovieService
     {
-        Task<Movie> GetMovieByNameAsync(string movieName);
-        Task<List<Movie>> GetAllMoviesAsync();
+        Task<List<MovieInfo>> GetMovieByNameAsync(string movieName);
+        Task<List<MovieInfo>> GetAllMoviePartsAsync();
 
         //Task<string> GetMovieIdByTitleAsync(string movieName);
     }
