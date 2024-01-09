@@ -1,6 +1,11 @@
 ﻿using IMDbWebApi.Contracts;
 using IMDbWebApi.Data.Models;
+using IMDbWebApi.ViewModels;
+using Microsoft.AspNetCore.Http;
+//using IMDbWebApi.ViewModels;
+
 using Newtonsoft.Json;
+
 
 namespace IMDbWebApi.Services
 {
@@ -9,18 +14,20 @@ namespace IMDbWebApi.Services
         private HttpClient httpClient;
         private readonly string imdbApiKey;
         private readonly string baseUrl;
+        private readonly List<MovieInfo> movies;
 
         public MovieService()
         {
             httpClient = new HttpClient();
-            imdbApiKey = System.Environment.GetEnvironmentVariable("IMDB_API_KEY");
-            baseUrl = System.Environment.GetEnvironmentVariable("IMDB_BASE_URL");
+            imdbApiKey = Environment.GetEnvironmentVariable("IMDB_API_KEY");
+            baseUrl = Environment.GetEnvironmentVariable("IMDB_BASE_URL");
+            movies = new List<MovieInfo>();
         }
 
-        public async Task<Movie> GetMovieByNameAsync(string movieName)
+        public async Task<List<MovieInfo>> GetMovieByNameAsync(string movieName)
         {
           
-            string requestUri = $"{baseUrl}?apikey={imdbApiKey}&t={movieName}";
+            string requestUri = $"{baseUrl}3/search/movie?api_key={imdbApiKey}&query={movieName}"; //={movieName}?api_key={imdbApiKey}";
 
             // Make a request to the external API
             HttpResponseMessage response = await httpClient.GetAsync(requestUri);
@@ -29,16 +36,32 @@ namespace IMDbWebApi.Services
             {
                 var content = await response.Content.ReadAsStringAsync();
 
-                //Deserialize the string content to Movie object using Newtonsoft.Json
-                var movie = JsonConvert.DeserializeObject<Movie>(content);
+                if (!string.IsNullOrEmpty(content))
+                {
+                    //Deserialize the string content to Movie object using Newtonsoft.Json
+                    MovieSearchResult result = JsonConvert.DeserializeObject<MovieSearchResult>(content);
 
-                return movie;
+                    if (result.Results != null)
+                    {
+                        movies.AddRange(result.Results);
+                        // return movies;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("No movie found or error occurred");
+                    }                    
+                }
+                else
+                {
+                    //handle errors
+                   // Console.WriteLine($"Failed to fetch data. Status code: {response.StatusCode}");
+                    throw new InvalidOperationException("No movie found or error occurred");
+                }               
+
             }
-
-            // Return null or handle errors appropriately
-            throw new InvalidOperationException("No movie found or error occurred");
+                    return movies;
         }
-        public async Task<List<Movie>> GetAllMoviesAsync()
+        public async Task<List<MovieInfo>> GetAllMoviePartsAsync()
         {
             string requestUri = $"{baseUrl}?apikey={imdbApiKey}";
 
@@ -52,12 +75,10 @@ namespace IMDbWebApi.Services
 
                 if (!string.IsNullOrEmpty(results))
                 {
-                    List<Movie> movies = JsonConvert.DeserializeObject<List<Movie>>(results);
-                
-                    if(movies != null && movies.Any())
-                    {
-                        return movies;
-                    }                    
+                    var listOfMovies = JsonConvert.DeserializeObject<List<MovieInfo>>(results);
+
+                    movies.AddRange(listOfMovies);
+                    return movies;
                 }
             }
             // Handle errors appropriately

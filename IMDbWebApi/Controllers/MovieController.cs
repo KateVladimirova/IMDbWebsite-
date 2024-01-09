@@ -32,10 +32,10 @@ namespace IMDbWebApi.Controllers
         }
 
         [HttpGet("allmovies")]
-        public async Task<ActionResult<List<Movie>>> GetAllMoviesAsync()
+        public async Task<ActionResult<List<Movie>>> GetAllMoviePartsAsync()
         {
 
-            var movies = await movieService.GetAllMoviesAsync();
+            var movies = await movieService.GetAllMoviePartsAsync();
             return Ok(movies);
         }
 
@@ -50,8 +50,8 @@ namespace IMDbWebApi.Controllers
         //[HttpGet("{id}")]
         //public async Task<string> GetMovieIdByTitle(string id)
         //{
-        //    return await movieService.GetMovieIdByTitleAsync(movieId);
-        //    movi
+        //    return await movieService.GetMovieIdByTitleAsync(id);
+           
         //}
 
     }
